@@ -6,11 +6,13 @@ data_page <- (
     box(
       title = "Filters",width = 5, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
+      color = "green",
       h3("data filters")
     ),
     box(
       title = "Output", width = 11, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
+      color = "teal",
       h3("Data output")
     )
   )
@@ -20,6 +22,7 @@ analysis_page <- (
   box(
     title = "Analysis", width = 16, collapsible=FALSE,
     ribbon = FALSE, title_side = "top left",
+    color = "olive",
     h3("Data Analysis")
   )
 )
