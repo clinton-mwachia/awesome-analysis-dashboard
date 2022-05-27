@@ -5,12 +5,12 @@ data_page <- (
   fluidRow(
     box(
       title = "Filters",width = 5, collapsible=FALSE,
-      ribbon = FALSE,
+      ribbon = FALSE, title_side = "top left",
       h3("data filters")
     ),
     box(
       title = "Output", width = 11, collapsible=FALSE,
-      ribbon = FALSE,
+      ribbon = FALSE, title_side = "top left",
       h3("Data output")
     )
   )
@@ -19,7 +19,7 @@ data_page <- (
 analysis_page <- (
   box(
     title = "Analysis", width = 16, collapsible=FALSE,
-    ribbon = FALSE,
+    ribbon = FALSE, title_side = "top left",
     h3("Data Analysis")
   )
 )
