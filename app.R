@@ -32,8 +32,6 @@ data_page <- (
                   selected = 0),
       selectInput("am", "select Transmission", choices = NULL),
       selectInput("gear", "select No. of gears", choices = unique(data$gear), 
-                  selected = 1),
-      selectInput("carb", "select No. of carburetors", choices = unique(data$vs), 
                   selected = 1)
     ),
     box(
@@ -82,8 +80,7 @@ server <- function(input, output, session) {
       filter(
         vs == input$vs,
         am == input$am,
-        gear == input$gear,
-        carb == input$carb)
+        gear == input$gear)
   })
   
   home_data_engine <- reactive({
@@ -94,7 +91,6 @@ server <- function(input, output, session) {
   observeEvent(home_data_engine(),{
     updateSelectInput(session,"am", choices = home_data_engine()$am)
     updateSelectInput(session,"gear", choices = home_data_engine()$gear)
-    updateSelectInput(session,"carb", choices = home_data_engine()$carb)
   })
   
   output$table <- renderTable({
