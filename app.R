@@ -1,4 +1,5 @@
 library(shiny)
+library(dplyr)
 library(semantic.dashboard)
 
 data_page <- (
@@ -7,13 +8,14 @@ data_page <- (
       title = "Filters",width = 5, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
       color = "green",
-      h3("data filters")
+      selectInput("one","input one", choices = mtcars$mpg),
+      selectInput("two","input two", choices = c("a","b"))
     ),
     box(
       title = "Output", width = 11, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
       color = "teal",
-      h3("Data output")
+      tableOutput("table")
     )
   )
 )
@@ -50,6 +52,10 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
+  output$table <- renderTable({
+    mtcars %>%
+      filter(mpg == input$one)
+  })
 }
 
 shinyApp(ui, server)
