@@ -1,6 +1,24 @@
+# loading the libraries
 library(shiny)
 library(dplyr)
 library(semantic.dashboard)
+
+
+# loading the data
+data <- mtcars
+
+# data preparation
+data <- data %>%
+  mutate(
+    vs = as.factor(vs),
+    am = as.factor(am),
+    gear = as.factor(gear),
+    carb = as.factor(carb),
+    cyl = as.factor(cyl)
+  )
+
+numeric_cols <- c("mpg", "disp", "hp", "drat" , "wt" , "qsec")
+categoric_cols <- c("vs", "am", "gear", "carb", "cyl")
 
 data_page <- (
   fluidRow(
@@ -8,8 +26,15 @@ data_page <- (
       title = "Filters",width = 5, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
       color = "green",
-      selectInput("one","input one", choices = mtcars$mpg),
-      selectInput("two","input two", choices = c("a","b"))
+      #selectInput("col1","column one", choices = numeric_cols),
+      #selectInput("col2","column two", choices = numeric_cols)
+      selectInput("vs", "select Engine", choices = unique(data$vs), 
+                  selected = 0),
+      selectInput("am", "select Transmission", choices = NULL),
+      selectInput("gear", "select No. of gears", choices = unique(data$gear), 
+                  selected = 1),
+      selectInput("carb", "select No. of carburetors", choices = unique(data$vs), 
+                  selected = 1)
     ),
     box(
       title = "Output", width = 11, collapsible=FALSE,
@@ -52,9 +77,28 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
+  home_data <- reactive({
+    data %>%
+      filter(
+        vs == input$vs,
+        am == input$am,
+        gear == input$gear,
+        carb == input$carb)
+  })
+  
+  home_data_engine <- reactive({
+    data %>%
+      filter(vs == input$vs)
+  })
+  
+  observeEvent(home_data_engine(),{
+    updateSelectInput(session,"am", choices = home_data_engine()$am)
+    updateSelectInput(session,"gear", choices = home_data_engine()$gear)
+    updateSelectInput(session,"carb", choices = home_data_engine()$carb)
+  })
+  
   output$table <- renderTable({
-    mtcars %>%
-      filter(mpg == input$one)
+    home_data()
   })
 }
 
