@@ -196,21 +196,16 @@ server <- function(input, output, session) {
       theme_bw()
   })
   
-  data1 <- data.frame(
-    name=c("A","B","C","D","E") ,  
-    value=c(3,12,5,18,45)
-  )
-  
   output$bp <- renderPlot({
   
-    ggplot(data1, aes(x=name, y=value)) + 
+    ggplot(data, aes(x=gear, y=disp)) + 
       geom_bar(stat = "identity", width=0.2) +
       theme_bw()
   })
   
   output$bp1 <- renderPlot({
     
-    ggplot(data1, aes(x=name, y=value)) + 
+    ggplot(data, aes(x=gear, y=hp)) + 
       geom_bar(stat = "identity") +
       theme_bw()
   })
