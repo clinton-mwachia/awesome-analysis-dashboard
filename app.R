@@ -5,6 +5,7 @@ library(dplyr)
 library(plotly)
 library(semantic.dashboard)
 
+data("mtcars")
 
 # loading the data
 data <- mtcars
@@ -56,7 +57,7 @@ scatter_plot_page <- (
     box(
       title = "interactive plotly", width = 8, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
-      color = "olive",
+      color = "red",
       plotlyOutput("sp2")
     )
   )
@@ -67,36 +68,59 @@ scatter_plot_page1 <- (
     box(
       title = "scatter plot by groups", width = 8, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
-      color = "olive",
+      color = "yellow",
       plotOutput("spg")
     ),
     box(
       title = "scatter ploy by groups and size", width = 8, collapsible=FALSE,
       ribbon = FALSE, title_side = "top left",
-      color = "olive",
+      color = "green",
       plotOutput("spg2")
     )
   )
+)
+
+bar_plot_page <- (
+    fluidRow(
+      box(
+        title = "scatter plot by groups", width = 8, collapsible=FALSE,
+        ribbon = FALSE, title_side = "top left",
+        color = "yellow",
+        plotOutput("bp")
+      ),
+      box(
+          title = "scatter ploy by groups and size", width = 8, collapsible=FALSE,
+          ribbon = FALSE, title_side = "top left",
+          color = "green",
+          plotOutput("bp1")
+          
+      )
+    )
 )
 
 ui <- dashboardPage(
   dashboardHeader(title = "Awesome Dashboard"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem(tabName = "Data", "data"),
-      menuItem(tabName = "Analysis", "Scatter Plot")
+      menuItem(tabName = "Data", "Data"),
+      menuItem(tabName = "Analysis", "Scatter Plot"),
+      menuItem(tabName = "BarPlot", "Bar Plot")
     )
   ),
   dashboardBody(
     tabItems(
       tabItem(
         tabName = "Data",
-        data_page,
+        data_page
       ),
       tabItem(
         tabName = "Analysis",
         scatter_plot_page,
         scatter_plot_page1
+      ),
+      tabItem(
+        tabName = "BarPlot",
+        bar_plot_page
       )
     )
   )
@@ -171,6 +195,27 @@ server <- function(input, output, session) {
       geom_point(size=6) +
       theme_bw()
   })
+  
+  data1 <- data.frame(
+    name=c("A","B","C","D","E") ,  
+    value=c(3,12,5,18,45)
+  )
+  
+  output$bp <- renderPlot({
+  
+    ggplot(data1, aes(x=name, y=value)) + 
+      geom_bar(stat = "identity", width=0.2) +
+      theme_bw()
+  })
+  
+  output$bp1 <- renderPlot({
+    
+    ggplot(data1, aes(x=name, y=value)) + 
+      geom_bar(stat = "identity") +
+      theme_bw()
+  })
+  
+  
   
 }
 
