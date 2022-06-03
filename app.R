@@ -3,6 +3,8 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 library(plotly)
+library(gapminder)
+library(gganimate)
 library(semantic.dashboard)
 
 data("mtcars")
@@ -109,13 +111,21 @@ box_plot <- (
   )
 )
 
+animation_plot <- (
+  fluidRow(
+    box(title = "Animation", color = "blue",width = 16),
+    plotOutput("ap")
+  )
+)
+
 ui <- dashboardPage(
   dashboardHeader(title = "Awesome Dashboard"),
   dashboardSidebar(
     sidebarMenu(
       menuItem(tabName = "Data", "Data"),
       menuItem(tabName = "Analysis", "Scatter Plot"),
-      menuItem(tabName = "BarPlot", "Bar Plot")
+      menuItem(tabName = "BarPlot", "Bar Plot"),
+      menuItem(tabName = "Animation", "Animation")
     )
   ),
   dashboardBody(
@@ -133,6 +143,10 @@ ui <- dashboardPage(
         tabName = "BarPlot",
         bar_plot_page,
         box_plot
+      ),
+      tabItem(
+        tabName = "Animation",
+        animation_plot
       )
     )
   )
@@ -226,6 +240,16 @@ server <- function(input, output, session) {
     ggplot(mpg, aes(x=class, y=hwy, fill=class)) + 
       geom_boxplot(alpha=0.3) +
       theme(legend.position="none")
+  })
+  
+  output$ap <- renderPlot({
+    ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, color = continent)) +
+      geom_point() +
+      scale_x_log10() +
+      theme_bw() +
+      labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+      transition_time(year) +
+      ease_aes('linear')
   })
   
 }
