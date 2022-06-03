@@ -98,6 +98,17 @@ bar_plot_page <- (
     )
 )
 
+box_plot <- (
+  fluidRow(
+    box(
+      title = "box plot", width = 16,
+      ribbon = FALSE, title_side = "top left",
+      color = "yellow",
+      plotOutput("bxp")
+    )
+  )
+)
+
 ui <- dashboardPage(
   dashboardHeader(title = "Awesome Dashboard"),
   dashboardSidebar(
@@ -120,7 +131,8 @@ ui <- dashboardPage(
       ),
       tabItem(
         tabName = "BarPlot",
-        bar_plot_page
+        bar_plot_page,
+        box_plot
       )
     )
   )
@@ -210,7 +222,11 @@ server <- function(input, output, session) {
       theme_bw()
   })
   
-  
+  output$bxp <- renderPlot({
+    ggplot(mpg, aes(x=class, y=hwy, fill=class)) + 
+      geom_boxplot(alpha=0.3) +
+      theme(legend.position="none")
+  })
   
 }
 
